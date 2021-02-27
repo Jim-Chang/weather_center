@@ -14,7 +14,7 @@ import (
 type Weather struct {
 	ID          int       `gorm:"column:id;primary_key" json:"id"`
 	RecordedAt  time.Time `gorm:"column:recorded_at" json:"datetime"`
-	Temperature float32   `gorm:"column:temperture" json:"temperature"`
+	Temperature float32   `gorm:"column:temperature" json:"temperature"`
 	Humidity    float32   `gorm:"column:humidity"  json:"humidity"`
 }
 
