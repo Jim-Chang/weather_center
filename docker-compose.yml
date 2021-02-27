@@ -1,0 +1,29 @@
+version: '2.3'
+services:
+  weather-center-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: weather-center-service:latest
+    container_name: weather-center-service
+    restart: always
+    ports:
+      - "8002:8080"
+    networks:
+      - weather-center-service
+    mem_limit: 50M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1k"
+        max-file: "3"
+    volumes: 
+      - ./db:/app/db
+    environment:
+      GIN_MODE: "release"
+
+
+networks:
+  weather-center-service:
+    name: weather-center-service-network
+    driver: bridge
