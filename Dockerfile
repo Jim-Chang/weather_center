@@ -9,7 +9,7 @@ FROM debian:buster as product-stage
 EXPOSE 8080
 
 RUN groupadd -r wcenter
-RUN useradd -r -u 1010 -g wcenter wcenter
+RUN useradd -r -u 1000 -g wcenter wcenter
 
 WORKDIR /app
 COPY --from=build-stage /app/weather_center /app/weather_center
