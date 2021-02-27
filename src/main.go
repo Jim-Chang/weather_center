@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,10 @@ type Weather struct {
 
 func InitDb() *gorm.DB {
 	// Openning file
-	db, err := gorm.Open("sqlite3", "./data.db")
+	if _, err := os.Stat("db"); os.IsNotExist(err) {
+		os.Mkdir("db", 0755)
+	}
+	db, err := gorm.Open("sqlite3", "./db/data.db")
 	// Display SQL queries
 	// db.LogMode(true)
 
@@ -86,5 +90,10 @@ func LatestWeather(c *gin.Context) {
 
 	weather := Weather{}
 	db.Last(&weather)
-	c.JSON(200, gin.H{"status": "ok", "data": weather})
+
+	if weather.ID == 0 {
+		c.JSON(200, gin.H{"status": "no_data"})
+	} else {
+		c.JSON(200, gin.H{"status": "ok", "data": weather})
+	}
 }
