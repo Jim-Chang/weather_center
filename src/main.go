@@ -18,6 +18,10 @@ type Weather struct {
 	Humidity    float32   `gorm:"column:humidity"  json:"humidity"`
 }
 
+type SensorUploadData struct {
+	Weathers []Weather `json:"data"`
+}
+
 func InitDb() *gorm.DB {
 	// Openning file
 	dbPath := os.Getenv("DB_PATH")
@@ -65,10 +69,12 @@ func UploadSensorData(c *gin.Context) {
 	db := InitDb()
 	defer db.Close()
 
-	var weather Weather
-	c.Bind(&weather)
+	var uploadData SensorUploadData
+	c.Bind(&uploadData)
 
-	db.Create(&weather)
+	for _, weather := range uploadData.Weathers {
+		db.Create(&weather)
+	}
 	c.JSON(201, gin.H{"status": "ok"})
 }
 
@@ -86,7 +92,7 @@ func QueryWeather(c *gin.Context) {
 	}
 
 	weathers := []Weather{}
-	db.Find(&weathers, "recorded_at >= ? AND recorded_at <= ?", startDatetime, endDatetime)
+	db.Find(&weathers, "recorded_at >= ? AND recorded_at <= ?", startDatetime, endDatetime).Order("recorded_at asc")
 	c.JSON(200, gin.H{"status": "ok", "data": weathers})
 }
 
@@ -95,7 +101,7 @@ func LatestWeather(c *gin.Context) {
 	defer db.Close()
 
 	weather := Weather{}
-	db.Last(&weather)
+	db.Last(&weather).Order("recorded_at asc")
 
 	if weather.ID == 0 {
 		c.JSON(200, gin.H{"status": "no_data"})
