@@ -21,6 +21,7 @@ services:
       - ./db:/app/db
     environment:
       GIN_MODE: "release"
+      DB_PATH: "/app/db/data.db"
 
 
 networks:

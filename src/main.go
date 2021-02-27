@@ -20,10 +20,11 @@ type Weather struct {
 
 func InitDb() *gorm.DB {
 	// Openning file
-	if _, err := os.Stat("db"); os.IsNotExist(err) {
-		os.Mkdir("db", 0755)
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		dbPath = "data.db"
 	}
-	db, err := gorm.Open("sqlite3", "./db/data.db")
+	db, err := gorm.Open("sqlite3", dbPath)
 	// Display SQL queries
 	// db.LogMode(true)
 
