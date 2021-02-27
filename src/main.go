@@ -100,7 +100,7 @@ func QueryWeather(c *gin.Context) {
 	}
 
 	weathers := []Weather{}
-	db.Find(&weathers, "recorded_at >= ? AND recorded_at <= ?", startDatetime, endDatetime).Order("recorded_at asc")
+	db.Order("recorded_at asc").Find(&weathers, "recorded_at >= ? AND recorded_at <= ?", startDatetime, endDatetime)
 	c.JSON(200, gin.H{"status": "ok", "data": weathers})
 }
 
@@ -109,7 +109,7 @@ func LatestWeather(c *gin.Context) {
 	defer db.Close()
 
 	weather := Weather{}
-	db.Last(&weather).Order("recorded_at asc")
+	db.Order("recorded_at asc").Last(&weather)
 
 	if weather.ID == 0 {
 		c.JSON(200, gin.H{"status": "no_data"})
