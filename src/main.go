@@ -30,7 +30,7 @@ func InitDb() *gorm.DB {
 	}
 	db, err := gorm.Open("sqlite3", dbPath)
 	// Display SQL queries
-	// db.LogMode(true)
+	db.LogMode(true)
 
 	// Error
 	if err != nil {
@@ -108,7 +108,7 @@ func LatestWeather(c *gin.Context) {
 	defer db.Close()
 
 	weather := Weather{}
-	db.Order("recorded_at asc").Last(&weather)
+	db.Order("recorded_at desc").Limit(1).Find(&weather)
 
 	if weather.ID == 0 {
 		c.JSON(200, gin.H{"status": "no_data"})
