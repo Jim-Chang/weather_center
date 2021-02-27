@@ -1,0 +1,15 @@
+image: python:3.8.5
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Deploy to Prod
+          deployment: production
+          script:
+            - pipe: atlassian/ssh-run:0.2.8
+              variables:
+                SSH_USER: $SSH_USER
+                SERVER: $SERVER
+                PORT: $SSH_PORT
+                COMMAND: 'cd /home/jim/weather_center && git pull && docker-compose up -d --build'
