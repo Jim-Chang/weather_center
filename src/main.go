@@ -91,7 +91,6 @@ func QueryWeather(c *gin.Context) {
 	defer db.Close()
 
 	param := c.Request.URL.Query()
-	fmt.Println(param)
 	startDatetime := param.Get("start_datetime")
 	endDatetime := param.Get("end_datetime")
 
