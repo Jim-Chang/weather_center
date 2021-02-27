@@ -47,7 +47,8 @@ func main() {
 
 	v1 := r.Group("api/v1")
 	{
-		v1.POST("/weather", PostWeather)
+		v1.POST("/echo", Echo)
+		v1.POST("/sensor/upload", UploadSensorData)
 		v1.GET("/weather/query", QueryWeather)
 		v1.GET("/weather/latest", LatestWeather)
 	}
@@ -55,15 +56,17 @@ func main() {
 	r.Run(":8080")
 }
 
-func PostWeather(c *gin.Context) {
+func Echo(c *gin.Context) {
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	c.Writer.Write(body)
+}
+
+func UploadSensorData(c *gin.Context) {
 	db := InitDb()
 	defer db.Close()
 
 	var weather Weather
 	c.Bind(&weather)
-	body, _ := ioutil.ReadAll(c.Request.Body)
-	fmt.Print(string(body))
-	fmt.Print(&weather)
 
 	db.Create(&weather)
 	c.JSON(201, gin.H{"status": "ok"})
