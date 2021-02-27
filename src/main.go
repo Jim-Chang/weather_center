@@ -73,7 +73,11 @@ func UploadSensorData(c *gin.Context) {
 	c.Bind(&uploadData)
 
 	for _, weather := range uploadData.Weathers {
-		if weather.Humidity == 0 && weather.Temperature == 0 {
+		var temp = Weather{}
+		db.First(&temp, "recorded_at == ?", weather.RecordedAt)
+		if temp.ID != 0 {
+			fmt.Println("This data has been exist, pass.")
+		} else if weather.Humidity == 0 && weather.Temperature == 0 {
 			fmt.Println("Temperature and Humidify all equal 0, pass this data")
 		} else {
 			db.Create(&weather)
